@@ -49,6 +49,7 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
     private BootstrapButton month1Btn;
     private BootstrapButton month2Btn;
     private BootstrapButton month3Btn;
+    private BootstrapButton openBtn;
     private Calendar calendar = Calendar.getInstance();
     private SearchView mSearchView;
     private String[] cosmeticNameList;
@@ -71,6 +72,9 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
         month1Btn = (BootstrapButton)findViewById(R.id.alarm_1month_btn);
         month2Btn = (BootstrapButton)findViewById(R.id.alarm_2month_btn);
         month3Btn = (BootstrapButton)findViewById(R.id.alarm_3month_btn);
+        openBtn = (BootstrapButton)findViewById(R.id.cosmetic_open);
+        openBtn.setBackgroundColor(00000000);
+        openBtn.setTextColor(Color.BLACK);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         cosmeticOpenDay = (EditText)findViewById(R.id.cosmetic_open_day);
         cosmeticExpriyDay = (EditText)findViewById(R.id.cosmetic_expriy_date);
@@ -200,18 +204,23 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
                     db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),"asd",AddItem.getCosmeticID());
                     Intent intent = new Intent(AddCosmeticActivity.this, MainActivity.class);
                     startActivity(intent);
+
+                    //알림기능 사용
                     Intent alarmIntent = new Intent(AddCosmeticActivity.this, MyBroadcastReciver.class);
+                    //Pending Intent 이용해서 알림을 등록 하기 위함
                     PendingIntent sender = PendingIntent.getBroadcast(AddCosmeticActivity.this, 0, alarmIntent, 0);
-                    //알람시간 calendar에 set해주기
+                    //DB에서 알림 시각을 꺼내옴
                     String data = db.getAlarmData();
                     String time[] = null;
                     if(!data.equals(new String("NoData"))) {
                         String temp[] = data.split("/");
                         time = temp[2].split(":");
                     }
-                    if(week1Btn.isSelected()) {
-                        calendar.add(Calendar.DATE,-7);
+                    if(week1Btn.isSelected()) {//각 버튼 별 알림 유무 확인 - 그니까 1주일전에 알림을 줄것인지, 2주일전에 줄것인지...
+                        calendar.add(Calendar.DATE,-7);//calendar에 유통기한 날짜가 저장이 되어 있는데, 거기서 7일을 뺌
+                        //알림할 년,월,일,시,분,초 설정
                         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
+                        //알림매니저를 이용해서 알림을 설정 하는 기능
                         mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
                     }
                     if(week2Btn.isSelected()) {

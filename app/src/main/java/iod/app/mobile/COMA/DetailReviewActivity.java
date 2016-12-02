@@ -26,6 +26,7 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = MySqliteOpenHelper.getInstance(getApplicationContext());
+        //다른데서 넘어올때 intent에 값을 넣어서 보내주었기 때문에 여기서 intent를 받아주고
         intent = getIntent();
         setContentView(R.layout.activity_detail_review);
         cosmeticBrand = (TextView)findViewById(R.id.cosmetic_brand_review);
@@ -36,13 +37,19 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //intent를 통해 넘어온 값이 화장품ID이므로 그걸 꺼내줌
         int cosmetic_id = Integer.valueOf(intent.getStringExtra("cosmetic_id"));
+        //DB에서 그 ID에 부합하는 화장품의 데이터를 꺼내옴
         String data = db.getCosmeticData(cosmetic_id);
+        //꺼내온 데이터를 편집하는 과정
         String cosmeticData[] = data.split("/");
+        //화면에 보이는 값들 브랜드, 이름, 별점, 성분들을 받아온 데이터로 변경을 해줌
         cosmeticBrand.setText(cosmeticData[0]);
         cosmeticName.setText(cosmeticData[1]);
         cosmeticRating.setRating(Float.valueOf(cosmeticData[2]));
         cosmeticIngredient.setText(cosmeticData[3]);
+        
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);

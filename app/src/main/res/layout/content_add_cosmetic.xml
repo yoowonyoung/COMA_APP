@@ -70,10 +70,28 @@
                     android:textColor="#BBBBBB"
                     />
 
-                <Spinner
-                    android:id="@+id/cosmetic_type_spinner"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/list"
+                        />
+
+                    <Spinner
+                        android:id="@+id/cosmetic_type_spinner"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+
+
 
             </LinearLayout>
 
@@ -87,11 +105,19 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true">
 
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/exp"
+                />
+
             <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/cosmetic_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:bootstrapBrand="regular"
-                app:bootstrapSize="sm"
+                app:bootstrapSize="lg"
                 app:bootstrapText="제품 개봉일"
                 app:buttonMode="regular"
                 app:roundedCorners="true"
@@ -115,6 +141,14 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true">
 
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/calendar"
+                />
+
+
             <Spinner
                 android:id="@+id/cosmetic_expiry_spinner"
                 android:layout_width="wrap_content"
@@ -130,18 +164,38 @@
 
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="알림을 받으실 기간을 선택 해주세요(중복 선택 가능)"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_weight="2"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:textColor="#BBBBBB"
-            />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="2dp"
+                android:src="@drawable/alarm"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="알림을 받으실 기간을 선택 해주세요 \n (중복 선택 가능)"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:layout_weight="2"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="#BBBBBB"
+                />
+
+
+        </LinearLayout>
+
+
 
 
         <LinearLayout

@@ -10,7 +10,6 @@
     tools:showIn="@layout/app_bar_main">
 
 
-
     <ListView
         android:id="@+id/cosmetic_listview"
         android:layout_width="wrap_content"

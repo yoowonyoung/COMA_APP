@@ -52,6 +52,12 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO COSMETIC_RANKING VALUES('우르오스','스킨밀크', 3.5, 450, 495, 2)");
     }
 
+    public void myclear() {
+        db.execSQL("DELETE FROM MY_COSMETIC WHERE cosmetic_id = 1");
+        db.execSQL("DELETE FROM MY_COSMETIC WHERE cosmetic_id = 2");
+        db.execSQL("DELETE FROM MY_COSMETIC WHERE cosmetic_id = 3");
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
     }
