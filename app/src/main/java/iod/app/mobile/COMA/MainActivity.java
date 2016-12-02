@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mSearchView = (SearchView)findViewById(R.id.main_search);
         mSearchView.setLayoutParams(new Toolbar.LayoutParams(Gravity.RIGHT));
         mSearchView.setQueryHint("화장품 이름을 입력해 주세요");
+        //db 초기화
+        db.myclear();
         cosmeticNameList = db.getCosmeticNameAndBrand().split("\n");
         cosmeticNameListView = (ListView) findViewById(R.id.cosmetic_listview);
         for (int i = 0; i < cosmeticNameList.length; i++) {
