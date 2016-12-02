@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_login" tools:context="iod.app.mobile.doggyware.LoginActivity">
+    tools:showIn="@layout/activity_login" tools:context="iod.app.mobile.COMA.LoginActivity">
 
 
     <LinearLayout
@@ -19,47 +19,19 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:src="@drawable/dog"/>
+            android:layout_height="320dp"
+            android:src="@drawable/logo"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="28sp"
-            android:text="DoggyWare"
-            android:textColor="#3F51B5"
-            android:layout_gravity="center_horizontal"/>
-
-        <EditText
+        <com.kakao.usermgmt.LoginButton
+            android:id="@+id/com_kakao_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="16"
-            android:singleLine="true"
-            android:id="@+id/edit_reg_id"
-            android:hint="기기 번호"/>
+            android:layout_gravity="bottom"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            android:id="@+id/button_login"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            app:bootstrapBrand="primary"
-            app:bootstrapSize="lg"
-            app:bootstrapText="등록"
-            app:buttonMode="regular"
-            app:roundedCorners="true"
-            app:showOutline="false" />
-
-        <TextView
-            android:id="@+id/qrtext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="QR코드로 입력하세요"
-            android:textColor="#0000FF"
-            android:layout_marginTop="16dp"/>
     </LinearLayout>
 </RelativeLayout>
 

@@ -1,11 +1,19 @@
-package iod.app.mobile.doggyware;
+package iod.app.mobile.COMA;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
+import android.support.annotation.BoolRes;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Switch;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -25,62 +33,48 @@ import iod.app.mobile.tools.global_variables;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
     ProgressDialog dialog;
+    MySqliteOpenHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         addPreferencesFromResource(R.xml.pref_headers);
-        getSupportActionBar().setTitle("어플리케이션 설정");
+        getSupportActionBar().setTitle("알림 설정");
+        db = MySqliteOpenHelper.getInstance(getApplicationContext());
 
-        findPreference("voiceRecord").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        findPreference("setNotifyTime").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                dialog = ProgressDialog.show(SettingsActivity.this, "녹음 중 입니다.", "5초간 녹음합니다...", true);
-                final Recorder recorder = Recorder.getInstanse(false);
-                recorder.setOutputFile("/storage/emulated/0/record.wav");
-                recorder.prepare();
-                recorder.start();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(5000);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dialog.dismiss();
-                                    recorder.stop();
-                                    recorder.release();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                builder.setTitle("알림 시각 설정");
+                final View dialogView = getLayoutInflater().inflate(R.layout.dialog_alram, null);
+
+                final TimePicker alarmPicker = (TimePicker) dialogView.findViewById(R.id.alarm_picker);
+                final SwitchPreference sound = (SwitchPreference)findPreference("soundNotifyEnable");
+                final SwitchPreference vibrate = (SwitchPreference)findPreference("vibrateNotifyEnable");
+
+                String data = db.getAlarmData();
+                if(!data.equals(new String("NoData"))) {
+                    String temp[] = data.split("/");
+                    String time[] = temp[2].split(":");
+                    alarmPicker.setCurrentHour(Integer.valueOf(time[0]));
+                    alarmPicker.setCurrentMinute(Integer.valueOf(time[1]));
+                }
+                builder.setView(dialogView);
+
+                builder.setNegativeButton("확인", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        db.setAlarm(sound.isChecked(),vibrate.isChecked(),alarmPicker.getCurrentHour()+":"+alarmPicker.getCurrentMinute());
                     }
-                }).start();
+                });
+                builder.setCancelable(true);
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return false;
             }
         });
 
-        findPreference("voiceTransfer").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                dialog = ProgressDialog.show(SettingsActivity.this, "서버와 통신 중", "음성을 전송중입니다...", true);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            voiceUpload();
-                        } catch (Exception e) {
-                            runOnUiThread(new TimeOutRunnable(SettingsActivity.this, dialog));
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-                return false;
-            }
-        });
     }
 
     private void setupActionBar() {

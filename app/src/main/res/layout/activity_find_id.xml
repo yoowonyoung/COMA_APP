@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:fitsSystemWindows="true"
-    tools:context="iod.app.mobile.COMA.LoginActivity">
-
-    <include layout="@layout/content_login" />
+    tools:context="iod.app.mobile.COMA.FindIDActivity">
+    <include layout="@layout/content_find_id" />
 
 </android.support.design.widget.CoordinatorLayout>

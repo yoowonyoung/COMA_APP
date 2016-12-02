@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="짖음 알림 설정">
+    <PreferenceCategory android:title="유통기한 알림 설정">
         <SwitchPreference
             android:defaultValue="false"
-            android:key="barkNotifyEnable"
-            android:summary="반려견이 짖을 때 알립니다."
+            android:key="soundNotifyEnable"
+            android:summary="유통기한이 다 되면 소리로 알림을 합니다"
             android:switchTextOff="끄기"
             android:switchTextOn="켜기"
-            android:title="짖음 알림"/>
+            android:title="소리 알림"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="vibrateNotifyEnable"
+            android:summary="유통기한이 다 되면 진동으로 알림을 합니다"
+            android:switchTextOff="끄기"
+            android:switchTextOn="켜기"
+            android:title="진동 알림"/>
 
         <Preference
-            android:summary="반려견이 짖을 때 재생될 음성을 녹음합니다."
-            android:title="사용자 음성 녹음"
-            android:key="voiceRecord">
+            android:summary="유통기한으로 설정된 날짜의 정해진 시각에 알림을 울립니다"
+            android:title="알림 시간 설정"
+            android:key="setNotifyTime">
         </Preference>
 
-        <Preference
-            android:summary="녹음된 음성을 서버/컨트롤러로 전송합니다."
-            android:title="녹음된 음성 전송"
-            android:key="voiceTransfer">
-        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

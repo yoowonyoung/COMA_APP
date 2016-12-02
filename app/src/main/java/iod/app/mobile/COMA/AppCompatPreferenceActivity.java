@@ -1,4 +1,4 @@
-package iod.app.mobile.doggyware;
+package iod.app.mobile.COMA;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

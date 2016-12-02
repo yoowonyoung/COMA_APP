@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="iod.app.mobile.doggyware.TemperatureManageActivity"
+    tools:context="iod.app.mobile.COMA.TemperatureManageActivity"
     tools:showIn="@layout/activity_temperature_view">
 
     <android.support.v4.widget.NestedScrollView

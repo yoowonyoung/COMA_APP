@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="expriy_date_type">
+        <item>유통기한 선택</item>
+        <item>직접 입력</item>
+        <item>6M</item>
+        <item>12M</item>
+        <item>24M</item>
+    </string-array>
+</resources>

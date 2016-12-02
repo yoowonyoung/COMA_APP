@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cosmetic_type">
+        <item>스킨케어</item>
+        <item>클렌징/필링</item>
+        <item>마스크/팩</item>
+        <item>썬케어</item>
+        <item>베이스 메이크업</item>
+        <item>아이 메이크업</item>
+        <item>립 메이크업</item>
+        <item>바디</item>
+        <item>헤어</item>
+        <item>네일</item>
+        <item>향수</item>
+        <item>기타</item>
+    </string-array>
+</resources>

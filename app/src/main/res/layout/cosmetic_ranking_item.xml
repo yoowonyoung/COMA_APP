@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cosmetic_cardview_rank"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="visible"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        card_view:contentPadding="16dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_weight="2"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/cosmetics_sample"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true">
+
+                    <TextView
+                        android:id="@+id/cosmetic_brand_rank"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="180ml"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_weight="1"
+                        android:textColor="#BBBBBB"
+                        />
+
+                    <TextView
+                        android:id="@+id/cosmetic_name_rank"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Sample Cosmecic Name"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:textColor="#000000"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RatingBar
+                            android:id="@+id/cosmetic_rating_rank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:rating="3.5"
+                            android:stepSize="0.5"
+                            android:max="5"
+                            style="?android:attr/ratingBarStyleSmall"/>
+
+                        <TextView
+                            android:id="@+id/cosmetic_review_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="(245)"
+                            android:textSize="14sp"
+                            android:textColor="#BBBBBB"/>
+
+
+                        <TextView
+                            android:id="@+id/cosmetic_volume_rank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="7"
+                            android:text="180ml"
+                            android:textSize="14sp"
+                            android:textAlignment="viewEnd"
+                            android:textColor="#BBBBBB"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

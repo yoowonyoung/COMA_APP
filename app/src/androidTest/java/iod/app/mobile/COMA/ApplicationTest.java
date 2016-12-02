@@ -1,4 +1,4 @@
-package iod.app.mobile.doggyware;
+package iod.app.mobile.COMA;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
