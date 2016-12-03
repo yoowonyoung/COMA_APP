@@ -56,7 +56,6 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
         db초기화 메서드
      */
     public void myclear() {
-        db.execSQL("DROP TABLE COSMETIC_RANKING");
         db.execSQL("DROP TABLE MY_COSMETIC");
         db.execSQL("DROP TABLE COSMETIC");
 
