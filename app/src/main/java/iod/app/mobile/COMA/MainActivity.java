@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rv.setLayoutManager(mLinearLayoutManager);
         String data = db.getMyCosmetic();
         String values[] = data.split("\n");
-        ArrayList<HashMap<String,String>> testList = new ArrayList<HashMap<String, String>>();
+        final ArrayList<HashMap<String,String>> testList = new ArrayList<HashMap<String, String>>();
         for(int i = 0; i < values.length; i++) {
             HashMap<String,String> posts = new HashMap<String,String>();
             String temp[] = values[i].split(",");
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter = new MyCosmeticAdapter(getApplicationContext(),testList);
         rv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        adapter.setVisibleCheckBox();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -111,6 +111,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddCosmeticActivity.class);
                 startActivity(intent);
+            }
+        });
+        fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(adapter.flag) {
+                    adapter.flag = false;
+                }else {
+                    adapter.flag = true;
+                }
+                adapter.notifyDataSetChanged();
             }
         });
 

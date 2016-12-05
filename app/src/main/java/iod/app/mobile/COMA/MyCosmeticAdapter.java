@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.ViewHolder> {
     Context context;
     ArrayList<HashMap<String,String>> nameAndType;
-    ViewHolder holder;
+    boolean flag = false;
 
     public MyCosmeticAdapter(Context context, ArrayList<HashMap<String,String>> nameAndType) {
         this.context = context;
@@ -37,7 +37,7 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_cosmetic_item,null);
-        holder = new ViewHolder(v);
+        ViewHolder holder = new ViewHolder(v);
         return holder;
     }
 
@@ -48,6 +48,11 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
         String temp[] = cosmeticItem.get("type").split(":");
         holder.cosmetic_type.setText(temp[0]);
         holder.cosmetic_id = Integer.valueOf(temp[1]);
+        if(flag) {
+            holder.cosmetic_check.setVisibility(View.VISIBLE);
+        }else {
+            holder.cosmetic_check.setVisibility(View.INVISIBLE);
+        }
 
     }
 
