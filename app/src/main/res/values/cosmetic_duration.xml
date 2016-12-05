@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cosmetic_duration">
+        <item>1주일</item>
+        <item>1개월</item>
+        <item>2개월</item>
+        <item>3개월</item>
+        <item>3개월 이상</item>
+    </string-array>
+</resources>

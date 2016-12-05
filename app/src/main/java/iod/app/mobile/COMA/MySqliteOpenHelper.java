@@ -61,9 +61,6 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE COSMETIC (cosmetic_id INTEGER PRIMARY KEY AUTOINCREMENT, cosmetic_ingredient TEXT, cosmetic_type TEXT, cosmetic_name TEXT, cosmetic_brand_name TEXT, cosmetic_volume INTEGER, cosmetic_image BLOB, cosmetic_rank REAL);");
         db.execSQL("CREATE TABLE MY_COSMETIC (cosmetic_brand_and_name TEXT, cosmetic_type TEXT, cosmetic_image BLOB, cosmetic_id INTEGER PRIMARY KEY, FOREIGN KEY(cosmetic_id) REFERENCES COSMETIC(cosmetic_id));");
-        db.execSQL("CREATE TABLE COSMETIC_REVIEW (cosmetic_brand_name TEXT, cosmetic_name TEXT, review_name TEXT, review_content TEXT, cosmetic_duration INTEGER, cosmetic_rank REAL, cosmetic_id INTEGER PRIMARY KEY, FOREIGN KEY(cosmetic_id) REFERENCES COSMETIC(cosmetic_id));");
-        db.execSQL("CREATE TABLE COSMETIC_RANKING (cosmetic_brand_name TEXT, cosmetic_name TEXT, cosmetic_rank REAL, cosmetic_volume INTEGER, cosmetic_review_count INTEGER, cosmetic_id INTEGER PRIMARY KEY, FOREIGN KEY(cosmetic_id) REFERENCES COSMETIC(cosmetic_id));");
-        db.execSQL("CREATE TABLE ALARM (sound TEXT, vibrate TEXT, time TEXT);");
 
         db.execSQL("INSERT INTO COSMETIC VALUES(1,'샌들우드오일,선백리향오일,타라곤뿌리추출물','바디','Dirty Spray','Lush',250,'asdf',4.5)");
         db.execSQL("INSERT INTO COSMETIC VALUES(2,'로즈마리잎오일,페퍼민트오일','스킨케어','스킨밀크','우르오스',450,'asdf',3.5)");

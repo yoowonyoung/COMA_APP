@@ -50,6 +50,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".KakaoSignupActivity" />
+        <activity android:name=".AddAndModifyReviewActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".AddCosmeticActivity"
             android:theme="@style/AppTheme.NoActionBar"
