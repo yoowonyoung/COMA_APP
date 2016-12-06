@@ -115,6 +115,10 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteMyCosmetic(int cosmetic_id) {
+        db.execSQL("DELETE FROM MY_COSMETIC WHERE cosmetic_id = " + cosmetic_id);
+    }
+
     public String getCosmeticNameAndBrand() {
         String result = "";
         Cursor cur = db.rawQuery("SELECT * FROM COSMETIC ",null);

@@ -14,8 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +34,7 @@ public class CosmeticReviewAndRankingActivity extends AppCompatActivity implemen
     private RecyclerView rv;
     private DrawerLayout drawer;
     private MySqliteOpenHelper db;
+    private ServerManager server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class CosmeticReviewAndRankingActivity extends AppCompatActivity implemen
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         db = MySqliteOpenHelper.getInstance(getApplicationContext());
+        server = ServerManager.getInstance();
         mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rv = (RecyclerView)findViewById(R.id.recycler_ranking);
         rv.setHasFixedSize(true);
@@ -49,13 +56,27 @@ public class CosmeticReviewAndRankingActivity extends AppCompatActivity implemen
         String data = db.getCosmeticRanking();
         String values[] = data.split("\n");
         ArrayList<HashMap<String,String>> testList = new ArrayList<HashMap<String, String>>();
+        try {
+            JSONObject obj = new JSONObject(server.get_rank_cosmetic_info());
+            JSONArray jsonArray = (JSONArray) obj.get("data");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                HashMap<String,String> posts = new HashMap<String,String>();
+                posts.put("name",temp.getString("cosmetic_brand_name") + "," + temp.getString("cosmetic_name"));
+                posts.put("data",temp.getDouble("cosmetic_rank") + "," + temp.getInt("cosmetic_volume") + "," + temp.getInt("cosmetic_review_count") + "," + temp.getInt("cosmetic_id"));
+                testList.add(posts);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        /*
         for(int i = 0; i < values.length; i++) {
             HashMap<String,String> posts = new HashMap<String,String>();
             String temp[] = values[i].split(":");
             posts.put("name",temp[0]);
             posts.put("data",temp[1]);
             testList.add(posts);
-        }
+        }*/
         adapter = new CosmeticRankingAdapter(getApplicationContext(),testList);
         rv.setAdapter(adapter);
         adapter.notifyDataSetChanged();

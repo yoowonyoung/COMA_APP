@@ -34,6 +34,10 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -59,6 +63,7 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
     private MySqliteOpenHelper db;
     private AlarmManager mManager;
     private CosmeticDatas AddItem;
+    private ServerManager server;
     Spinner cosmetic_tpye_spinner;
     TextView cosmeticName;
     TextView cosmeticVolume;
@@ -75,6 +80,7 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
         openBtn = (BootstrapButton)findViewById(R.id.cosmetic_open);
         openBtn.setBackgroundColor(00000000);
         openBtn.setTextColor(Color.BLACK);
+        server = ServerManager.getInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         cosmeticOpenDay = (EditText)findViewById(R.id.cosmetic_open_day);
         cosmeticExpriyDay = (EditText)findViewById(R.id.cosmetic_expriy_date);
@@ -91,11 +97,16 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
         mSearchView.setQueryHint("등록할 화장품 이름 검색");
         cosmeticNameList = db.getCosmeticNameAndVoluemAndType().split("\n");
         cosmeticNameListView = (ListView) findViewById(R.id.cosmetic_listview);
-        for (int i = 0; i < cosmeticNameList.length; i++) {
-            String temp[] = cosmeticNameList[i].split("/");
-            CosmeticDatas cosmeticDatas = new CosmeticDatas(temp[0],temp[1],Integer.valueOf(temp[2]),Integer.valueOf(temp[3]),temp[4]);
-            // Binds all strings into an array
-            arraylist.add(cosmeticDatas);
+        try {
+            JSONObject obj = new JSONObject(server.get_cosmetic_data());
+            JSONArray jsonArray = (JSONArray) obj.get("data");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                CosmeticDatas cosmeticDatas = new CosmeticDatas(temp.getString("cosmetic_name"),temp.getString("cosmetic_brand_name"),temp.getInt("cosmetic_id"),temp.getInt("cosmetic_volume"),temp.getString("cosmetic_type"));
+                arraylist.add(cosmeticDatas);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         // Pass results to CosmeticListViewAdapter Class
         cosmeticSearchListadapter = new AddCosmeticListAdapter(this,arraylist);

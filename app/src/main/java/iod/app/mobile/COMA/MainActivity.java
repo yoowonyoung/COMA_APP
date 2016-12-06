@@ -1,9 +1,11 @@
 package iod.app.mobile.COMA;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -20,6 +22,10 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,11 +36,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FloatingActionButton fabDelete;
     private LinearLayoutManager mLinearLayoutManager;
     private MySqliteOpenHelper db;
+    private ServerManager server;
     private MyCosmeticAdapter adapter;
     private RecyclerView rv;
     private ActionBarDrawerToggle toggle;
     private SearchView mSearchView;
-    private String[] cosmeticNameList;
     private ArrayList<CosmeticDatas> arraylist = new ArrayList<CosmeticDatas>();
     private ListView cosmeticNameListView;
     private CosmeticListViewAdapter cosmeticSearchListadapter;
@@ -46,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         db = MySqliteOpenHelper.getInstance(getApplicationContext());
+        server = ServerManager.getInstance();
         backPressCloseHandler = new BackPressCloseHandler(this);
         toolbar.setTitle("");
         mSearchView = (SearchView)findViewById(R.id.main_search);
@@ -53,13 +60,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mSearchView.setQueryHint("화장품 이름을 입력해 주세요");
         //db 초기화
         //db.myclear();
-        cosmeticNameList = db.getCosmeticNameAndBrand().split("\n");
         cosmeticNameListView = (ListView) findViewById(R.id.cosmetic_listview);
-        for (int i = 0; i < cosmeticNameList.length; i++) {
+        /*for (int i = 0; i < cosmeticNameList.length; i++) {
             String temp[] = cosmeticNameList[i].split("/");
             CosmeticDatas cosmeticDatas = new CosmeticDatas(temp[0],temp[1],Integer.valueOf(temp[2]));
             // Binds all strings into an array
             arraylist.add(cosmeticDatas);
+        }*/
+        //arraylist = server.get_cosmetic_data();
+        try {
+            JSONObject obj = new JSONObject(server.get_cosmetic_data());
+            JSONArray jsonArray = (JSONArray) obj.get("data");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                CosmeticDatas cosmeticDatas = new CosmeticDatas(temp.getString("cosmetic_name"),temp.getString("cosmetic_brand_name"),temp.getInt("cosmetic_id"));
+                arraylist.add(cosmeticDatas);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         // Pass results to CosmeticListViewAdapter Class
         cosmeticSearchListadapter = new CosmeticListViewAdapter(this, arraylist);
@@ -81,19 +99,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rv.setHasFixedSize(true);
         rv.setLayoutManager(mLinearLayoutManager);
         String data = db.getMyCosmetic();
-        String values[] = data.split("\n");
-        final ArrayList<HashMap<String,String>> testList = new ArrayList<HashMap<String, String>>();
-        for(int i = 0; i < values.length; i++) {
-            HashMap<String,String> posts = new HashMap<String,String>();
-            String temp[] = values[i].split(",");
-            posts.put("name",temp[0]);
-            posts.put("type",temp[1]);
-            testList.add(posts);
-        }
+        if(data.length() > 0) {
+            String values[] = data.split("\n");
+            final ArrayList<HashMap<String,String>> testList = new ArrayList<HashMap<String, String>>();
+            for(int i = 0; i < values.length; i++) {
+                HashMap<String,String> posts = new HashMap<String,String>();
+                String temp[] = values[i].split(",");
+                posts.put("name",temp[0]);
+                posts.put("type",temp[1]);
+                testList.add(posts);
+            }
 
-        adapter = new MyCosmeticAdapter(getApplicationContext(),testList);
-        rv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+            adapter = new MyCosmeticAdapter(getApplicationContext(),testList);
+            rv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }else {
+            //Toast.makeText(getApplicationContext(),"등록된 화장품이 없습니다!",Toast.LENGTH_SHORT).show();
+        }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -116,10 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(adapter.flag) {
-                    adapter.flag = false;
+                if(adapter.visibleflag) {
+                    adapter.visibleflag = false;
                 }else {
-                    adapter.flag = true;
+                    adapter.visibleflag = true;
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -151,7 +173,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-        adapter.updateDataa();
+        if(adapter != null) {
+            adapter.updateDataa();
+        }
         super.onResume();
     }
 

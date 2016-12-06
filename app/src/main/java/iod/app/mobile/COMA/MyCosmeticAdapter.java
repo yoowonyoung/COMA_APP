@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -25,11 +27,14 @@ import java.util.HashMap;
 public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.ViewHolder> {
     Context context;
     ArrayList<HashMap<String,String>> nameAndType;
-    boolean flag = false;
+    boolean visibleflag = false;
+    boolean deleteflag = false;
+    private MySqliteOpenHelper db;
 
     public MyCosmeticAdapter(Context context, ArrayList<HashMap<String,String>> nameAndType) {
         this.context = context;
         this.nameAndType = nameAndType;
+        db = MySqliteOpenHelper.getInstance(context);
     }
     public void updateDataa() {
         notifyDataSetChanged();
@@ -48,7 +53,7 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
         String temp[] = cosmeticItem.get("type").split(":");
         holder.cosmetic_type.setText(temp[0]);
         holder.cosmetic_id = Integer.valueOf(temp[1]);
-        if(flag) {
+        if(visibleflag) {
             holder.cosmetic_check.setVisibility(View.VISIBLE);
         }else {
             holder.cosmetic_check.setVisibility(View.INVISIBLE);
@@ -56,15 +61,12 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
 
     }
 
-    public void setVisibleCheckBox() {
-    }
-
     @Override
     public int getItemCount() {
         return this.nameAndType.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener{
         TextView cosmetic_name;
         TextView cosmetic_type;
         CheckBox cosmetic_check;
@@ -74,6 +76,12 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
         public ViewHolder(final View v) {
             super(v);
             cosmetic_name = (TextView)v.findViewById(R.id.cosmetic_name);
+            cosmetic_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context,""+getPosition(),Toast.LENGTH_SHORT).show();
+                }
+            });
             cosmetic_type = (TextView)v.findViewById(R.id.cosmetic_type);
             cosmetic_check = (CheckBox)v.findViewById(R.id.cosmetic_checkbox);
             cosmetic_check.setVisibility(View.INVISIBLE);
@@ -86,6 +94,18 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
                     v.getContext().startActivity(intent);
                 }
             });
+            cosmetic_check.setOnCheckedChangeListener(this);
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            removeAt(getAdapterPosition(),this);
+        }
+        public void removeAt(int position,ViewHolder viewHolder) {
+            nameAndType.remove(position);
+            notifyItemRemoved(position);
+            db.deleteMyCosmetic(cosmetic_id);
+            Toast.makeText(context,"삭제되었습니다",Toast.LENGTH_SHORT).show();
         }
     }
 }
