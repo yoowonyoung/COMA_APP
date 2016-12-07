@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AddAndModifyReviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -23,11 +24,14 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
     private TextView cosmeticIngredient;
     private RatingBar cosmeticRating;
     private Spinner cosmeticDurationSpinner;
+    private ServerManager server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = MySqliteOpenHelper.getInstance(getApplicationContext());
+        server = ServerManager.getInstance();
+        Toast.makeText(getApplicationContext(),server.getAllCosmetic_withReview(),Toast.LENGTH_LONG).show();
         //다른데서 넘어올때 intent에 값을 넣어서 보내주었기 때문에 여기서 intent를 받아주고
         intent = getIntent();
         setContentView(R.layout.activity_add_and_modify_review);

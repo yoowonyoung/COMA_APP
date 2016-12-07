@@ -203,7 +203,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/account"/>
+                            android:src="@drawable/review_good"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -257,7 +257,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/account"/>
+                            android:src="@drawable/review_bad"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -311,7 +311,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/account"/>
+                            android:src="@drawable/review_tip"/>
 
                         <TextView
                             android:layout_width="wrap_content"

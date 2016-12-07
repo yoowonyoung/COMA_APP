@@ -76,12 +76,6 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
         public ViewHolder(final View v) {
             super(v);
             cosmetic_name = (TextView)v.findViewById(R.id.cosmetic_name);
-            cosmetic_name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(context,""+getPosition(),Toast.LENGTH_SHORT).show();
-                }
-            });
             cosmetic_type = (TextView)v.findViewById(R.id.cosmetic_type);
             cosmetic_check = (CheckBox)v.findViewById(R.id.cosmetic_checkbox);
             cosmetic_check.setVisibility(View.INVISIBLE);

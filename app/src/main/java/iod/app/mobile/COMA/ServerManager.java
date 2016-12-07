@@ -53,9 +53,16 @@ public class ServerManager {
         async.execute(url+"store_review");
     }
 
-    public void getAllCosmetic_withReview(){
+    public String getAllCosmetic_withReview(){
         get_all_cosmetic_with_review async = new get_all_cosmetic_with_review();
-        async.execute(url+"getall_cosmetic_review");
+        try {
+            return async.execute(url+"getall_cosmetic_review").get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public String get_rank_cosmetic_info(){
