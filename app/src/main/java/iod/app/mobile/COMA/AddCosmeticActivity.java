@@ -6,7 +6,10 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
@@ -33,11 +36,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -64,14 +70,47 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
     private AlarmManager mManager;
     private CosmeticDatas AddItem;
     private ServerManager server;
-    Spinner cosmetic_tpye_spinner;
-    TextView cosmeticName;
-    TextView cosmeticVolume;
+    private Spinner cosmetic_tpye_spinner;
+    private TextView cosmeticName;
+    private TextView cosmeticVolume;
+    private TextView nickname;
+    private View header;
+    private Intent userData;
+    private NavigationView navigationView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cosmetic);
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        header = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        nickname = (TextView)header.findViewById(R.id.nav_nickname);
+        userData = getIntent();
+        nickname.setText(userData.getStringExtra("userNickname"));
+        final Handler handler = new Handler();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {    // 오래 거릴 작업을 구현한다
+                // TODO Auto-generated method stub
+                try{
+                    final CircularImageView iv = (CircularImageView)header.findViewById(R.id.nav_thumbnail);
+                    URL url = new URL(userData.getStringExtra("userThumbnailImage"));
+                    InputStream is = url.openStream();
+                    final Bitmap bm = BitmapFactory.decodeStream(is);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {  // 화면에 그려줄 작업
+                            iv.setImageBitmap(bm);
+                        }
+                    });
+                    iv.setImageBitmap(bm); //비트맵 객체로 보여주기
+                } catch(Exception e){
+                }
+            }
+        });
+        t.start();
         week1Btn = (BootstrapButton) findViewById(R.id.alarm_1week_btn);
         week2Btn = (BootstrapButton)findViewById(R.id.alarm_2week_btn);
         month1Btn = (BootstrapButton)findViewById(R.id.alarm_1month_btn);
@@ -214,6 +253,9 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
                 if(db.checkMyCosmetic(AddItem.getCosmeticID())){
                     db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),"asd",AddItem.getCosmeticID());
                     Intent intent = new Intent(AddCosmeticActivity.this, MainActivity.class);
+                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
                     startActivity(intent);
 
                     //알림기능 사용
@@ -299,9 +341,15 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
 
         if (id == R.id.nav_my) {
             Intent intent = new Intent(AddCosmeticActivity.this, MainActivity.class);
+            intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+            intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+            intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
             startActivity(intent);
         } else if (id == R.id.nav_review) {
             Intent intent = new Intent(AddCosmeticActivity.this, CosmeticReviewAndRankingActivity.class);
+            intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+            intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+            intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
             startActivity(intent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(AddCosmeticActivity.this, SettingsActivity.class);

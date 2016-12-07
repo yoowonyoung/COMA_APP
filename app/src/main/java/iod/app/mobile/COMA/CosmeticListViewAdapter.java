@@ -21,13 +21,15 @@ public class CosmeticListViewAdapter extends BaseAdapter {
     LayoutInflater inflater;
     private List<CosmeticDatas> cosmeticDatasList = null;
     private ArrayList<CosmeticDatas> arraylist;
+    Intent userData;
 
-    public CosmeticListViewAdapter(Context context, List<CosmeticDatas> cosmeticDatasList) {
+    public CosmeticListViewAdapter(Context context, List<CosmeticDatas> cosmeticDatasList, Intent userData) {
         this.context = context;
         this.cosmeticDatasList = cosmeticDatasList;
         inflater = LayoutInflater.from(context);
         this.arraylist = new ArrayList<CosmeticDatas>();
         this.arraylist.addAll(cosmeticDatasList);
+        this.userData = userData;
     }
 
     public class ViewHolder {
@@ -73,6 +75,9 @@ public class CosmeticListViewAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailReviewActivity.class);
                 intent.putExtra("cosmetic_id",""+holder.cosmeticID);
+                intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
                 view.getContext().startActivity(intent);
             }
         });

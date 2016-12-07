@@ -218,6 +218,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/cosmetic_review_good"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textMultiLine"
@@ -272,6 +273,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/cosmetic_review_bad"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textMultiLine"
@@ -326,6 +328,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/cosmetic_review_tip"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textMultiLine"

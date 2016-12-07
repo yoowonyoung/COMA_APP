@@ -52,13 +52,20 @@ public class KakaoSignupActivity extends Activity {
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
                 Logger.d("UserProfile : " + userProfile);
-                redirectMainActivity(); // 로그인 성공시 MainActivity로
+                String userNickname = userProfile.getNickname();
+                String userProfilImage = userProfile.getProfileImagePath();
+                String userThumbnailImage = userProfile.getThumbnailImagePath();
+                redirectMainActivity(userNickname,userProfilImage ,userThumbnailImage); // 로그인 성공시 MainActivity로
             }
         });
     }
 
-    private void redirectMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+    private void redirectMainActivity(String userNickname, String userProfilImage, String userThumbnailImage) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("userNickname",userNickname);
+        intent.putExtra("userProfilImage",userProfilImage);
+        intent.putExtra("userThumbnailImage",userThumbnailImage);
+        startActivity(intent);
         finish();
     }
     protected void redirectLoginActivity() {

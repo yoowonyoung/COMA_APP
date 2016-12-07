@@ -2,8 +2,13 @@ package iod.app.mobile.COMA;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,18 +24,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener  {
     private DrawerLayout drawer;
+    private NavigationView navigationView;
     private BackPressCloseHandler backPressCloseHandler;
     private FloatingActionButton fabAdd;
     private FloatingActionButton fabDelete;
@@ -44,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<CosmeticDatas> arraylist = new ArrayList<CosmeticDatas>();
     private ListView cosmeticNameListView;
     private CosmeticListViewAdapter cosmeticSearchListadapter;
+    private TextView nickname;
+    private View header;
+    private Intent userData;
 
 
     @Override
@@ -51,6 +67,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        header = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        nickname = (TextView)header.findViewById(R.id.nav_nickname);
+        userData = getIntent();
+        nickname.setText(userData.getStringExtra("userNickname"));
+        final Handler handler = new Handler();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {    // 오래 거릴 작업을 구현한다
+                // TODO Auto-generated method stub
+                try{
+                    final CircularImageView  iv = (CircularImageView)header.findViewById(R.id.nav_thumbnail);
+                    URL url = new URL(userData.getStringExtra("userThumbnailImage"));
+                    InputStream is = url.openStream();
+                    final Bitmap bm = BitmapFactory.decodeStream(is);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {  // 화면에 그려줄 작업
+                            iv.setImageBitmap(bm);
+                        }
+                    });
+                    iv.setImageBitmap(bm); //비트맵 객체로 보여주기
+                } catch(Exception e){
+                }
+            }
+        });
+        t.start();
         db = MySqliteOpenHelper.getInstance(getApplicationContext());
         server = ServerManager.getInstance();
         backPressCloseHandler = new BackPressCloseHandler(this);
@@ -80,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
         // Pass results to CosmeticListViewAdapter Class
-        cosmeticSearchListadapter = new CosmeticListViewAdapter(this, arraylist);
+        cosmeticSearchListadapter = new CosmeticListViewAdapter(this, arraylist,userData);
         // Binds the Adapter to the ListView
         cosmeticNameListView.setAdapter(cosmeticSearchListadapter);
         cosmeticNameListView.setBackgroundColor(Color.WHITE);
@@ -110,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 testList.add(posts);
             }
 
-            adapter = new MyCosmeticAdapter(getApplicationContext(),testList);
+            adapter = new MyCosmeticAdapter(getApplicationContext(),testList,userData);
             rv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }else {
@@ -132,6 +175,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddCosmeticActivity.class);
+                intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
                 startActivity(intent);
             }
         });
@@ -200,6 +246,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_review) {
             Intent intent = new Intent(MainActivity.this, CosmeticReviewAndRankingActivity.class);
+            intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+            intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+            intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
             startActivity(intent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);

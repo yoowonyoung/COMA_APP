@@ -21,10 +21,12 @@ import java.util.HashMap;
 public class CosmeticRankingAdapter extends RecyclerView.Adapter<CosmeticRankingAdapter.ViewHolder> {
     Context context;
     ArrayList<HashMap<String,String>> nameAndType;
+    Intent userData;
 
-    public CosmeticRankingAdapter(Context context, ArrayList<HashMap<String,String>> nameAndType) {
+    public CosmeticRankingAdapter(Context context, ArrayList<HashMap<String,String>> nameAndType,Intent userData) {
         this.context = context;
         this.nameAndType = nameAndType;
+        this.userData = userData;
     }
     public void updateDataa() {
         notifyDataSetChanged();
@@ -79,6 +81,9 @@ public class CosmeticRankingAdapter extends RecyclerView.Adapter<CosmeticRanking
                 public void onClick(View view) {
                     Intent intent = new Intent(context, DetailReviewActivity.class);
                     intent.putExtra("cosmetic_id",""+cosmetic_id);
+                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
                     v.getContext().startActivity(intent);
                 }
             });

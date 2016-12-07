@@ -30,11 +30,13 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
     boolean visibleflag = false;
     boolean deleteflag = false;
     private MySqliteOpenHelper db;
+    private Intent userData;
 
-    public MyCosmeticAdapter(Context context, ArrayList<HashMap<String,String>> nameAndType) {
+    public MyCosmeticAdapter(Context context, ArrayList<HashMap<String,String>> nameAndType, Intent userData) {
         this.context = context;
         this.nameAndType = nameAndType;
         db = MySqliteOpenHelper.getInstance(context);
+        this.userData = userData;
     }
     public void updateDataa() {
         notifyDataSetChanged();
@@ -85,6 +87,9 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
                 public void onClick(View view) {
                     Intent intent = new Intent(context, DetailReviewActivity.class);
                     intent.putExtra("cosmetic_id",""+cosmetic_id);
+                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
                     v.getContext().startActivity(intent);
                 }
             });
