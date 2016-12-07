@@ -110,6 +110,8 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
                                 if(review.getString("review_name").equals("reviewr_id")) {
                                     Toast.makeText(getApplicationContext(),"이미 리뷰를 등록한 화장품 입니다. \n리뷰 수정으로 이동됩니다.",Toast.LENGTH_SHORT).show();
                                     reviewGood.setText(review.getString("review_content"));
+                                    cosmeticDurationSpinner.setSelection(review.getInt("cosmetic_duration"));
+                                    cosmeticRating.setRating((float)review.getDouble("cosmetic_rank"));
                                 }
                             }
                         }
