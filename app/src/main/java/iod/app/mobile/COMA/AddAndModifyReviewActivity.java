@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONArray;
@@ -36,14 +37,17 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
     private TextView cosmeticName;
     private TextView cosmeticIngredient;
     private RatingBar cosmeticRating;
+    private RatingBar userRating;
     private Spinner cosmeticDurationSpinner;
     private ServerManager server;
-    private boolean reviewedFlag = false;
     private TextView nickname;
     private View header;
     private Intent userData;
     private NavigationView navigationView;
     private EditText reviewGood;
+    private EditText reviewBad;
+    private EditText reviewTip;
+    private BootstrapButton modifyBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,9 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         //다른데서 넘어올때 intent에 값을 넣어서 보내주었기 때문에 여기서 intent를 받아주고
         setContentView(R.layout.activity_add_and_modify_review);
         reviewGood = (EditText)findViewById(R.id.cosmetic_review_good);
+        reviewBad = (EditText)findViewById(R.id.cosmetic_review_bad);
+        reviewTip = (EditText)findViewById(R.id.cosmetic_review_tip);
+        modifyBtn = (BootstrapButton)findViewById(R.id.cosmetic_modify_review);
         navigationView = (NavigationView)findViewById(R.id.nav_view);
         header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         nickname = (TextView)header.findViewById(R.id.nav_nickname);
@@ -85,6 +92,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         cosmeticIngredient = (TextView)findViewById(R.id.cosmetic_ingredient_review);
         cosmeticRating = (RatingBar)findViewById(R.id.cosmetic_rating_review);
         cosmeticDurationSpinner = (Spinner)findViewById(R.id.cosmetic_duration_spinner);
+        userRating = (RatingBar)findViewById(R.id.cosmetic_rating_add_review);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.cosmetic_duration, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cosmeticDurationSpinner.setAdapter(adapter);
@@ -101,17 +109,24 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
                 if(temp.getInt("cosmetic_id") == cosmetic_id) {
+                    cosmeticBrand.setText(temp.getString("cosmetic_brand_name"));
+                    cosmeticName.setText(temp.getString("cosmetic_name"));
+                    cosmeticIngredient.setText(temp.getString("cosmetic_ingredient"));
+                    cosmeticRating.setRating(Float.valueOf(temp.getString("cosmetic_rank")));
                     JSONObject reviewData = temp.getJSONObject("r_data");
                     if(reviewData != null) {
                         JSONArray reviews = reviewData.getJSONArray("c_reviews");
                         if(reviews != null) {
                             for(int j = 0; j < reviews.length(); j++) {
                                 JSONObject review = reviews.getJSONObject(j);
-                                if(review.getString("review_name").equals("reviewr_id")) {
+                                if(review.getString("review_name").equals(userData.getStringExtra("userNickname"))) {
                                     Toast.makeText(getApplicationContext(),"이미 리뷰를 등록한 화장품 입니다. \n리뷰 수정으로 이동됩니다.",Toast.LENGTH_SHORT).show();
-                                    reviewGood.setText(review.getString("review_content"));
+                                    String goodAndBadAndTip[] = review.getString("review_content").split("/");
+                                    reviewGood.setText(goodAndBadAndTip[0]);
+                                    reviewBad.setText(goodAndBadAndTip[1]);
+                                    reviewTip.setText(goodAndBadAndTip[2]);
                                     cosmeticDurationSpinner.setSelection(review.getInt("cosmetic_duration"));
-                                    cosmeticRating.setRating((float)review.getDouble("cosmetic_rank"));
+                                    userRating.setRating(Float.valueOf(review.getString("cosmetic_rank")));
                                 }
                             }
                         }
@@ -123,6 +138,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        /*
         //DB에서 그 ID에 부합하는 화장품의 데이터를 꺼내옴
         String data = db.getCosmeticData(cosmetic_id);
         //꺼내온 데이터를 편집하는 과정
@@ -132,7 +148,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         cosmeticName.setText(cosmeticData[1]);
         cosmeticRating.setRating(Float.valueOf(cosmeticData[2]));
         cosmeticIngredient.setText(cosmeticData[3]);
-
+        */
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
