@@ -53,6 +53,18 @@ public class ServerManager {
         async.execute(url+"store_review");
     }
 
+    public void modify_reveiw(ReviewDatas review){
+        JSONMaker.getInstance().makeJson_store_review(review.getCosmetic_brand_name(), review.getCosmetic_name(), review.getReview_name(), review.getReview_content(), review.getCosmetic_duration(), review.getCosmetic_Rank(), review.getComestic_id());
+        store_review_async async = new store_review_async();
+        async.execute(url+"modify_review");
+    }
+
+    public void delete_review(ReviewDatas review){
+        JSONMaker.getInstance().makeJson_store_review(review.getCosmetic_brand_name(), review.getCosmetic_name(), review.getReview_name(), review.getReview_content(), review.getCosmetic_duration(), review.getCosmetic_Rank(), review.getComestic_id());
+        store_review_async async = new store_review_async();
+        async.execute(url+"delete_review");
+    }
+
     public String getAllCosmetic_withReview(){
         get_all_cosmetic_with_review async = new get_all_cosmetic_with_review();
         try {

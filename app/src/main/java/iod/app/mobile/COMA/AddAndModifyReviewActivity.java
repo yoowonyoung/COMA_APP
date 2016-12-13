@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.URL;
 
+import iod.app.mobile.COMA.DBStaticValue.REVIEW;
+
 public class AddAndModifyReviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     private MySqliteOpenHelper db;
@@ -48,6 +50,8 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
     private EditText reviewBad;
     private EditText reviewTip;
     private BootstrapButton modifyBtn;
+    private Boolean modifyFlag = false;
+    private int cosmetic_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +106,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //intent를 통해 넘어온 값이 화장품ID이므로 그걸 꺼내줌
-        int cosmetic_id = Integer.valueOf(userData.getStringExtra("cosmetic_id"));
+        cosmetic_id = Integer.valueOf(userData.getStringExtra("cosmetic_id"));
         try {
             JSONObject obj = new JSONObject(server.getAllCosmetic_withReview());
             JSONArray jsonArray = (JSONArray) obj.get("data");
@@ -127,6 +131,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
                                     reviewTip.setText(goodAndBadAndTip[2]);
                                     cosmeticDurationSpinner.setSelection(review.getInt("cosmetic_duration"));
                                     userRating.setRating(Float.valueOf(review.getString("cosmetic_rank")));
+                                    modifyFlag = true;
                                 }
                             }
                         }
@@ -157,7 +162,48 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        modifyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(modifyFlag) {
+                    ReviewDatas review = new ReviewDatas(cosmeticBrand.getText().toString(), cosmeticName.getText().toString(), userData.getStringExtra("userNickname"),reviewGood.getText() + "/" + reviewBad.getText() + "/" + reviewTip.getText(),
+                            cosmeticDurationSpinner.getSelectedItemPosition(), userRating.getRating(),Integer.valueOf(userData.getStringExtra("cosmetic_id")));
+                    server.modify_reveiw(review);
+                    Toast.makeText(getApplication(),userRating.getRating() + "" ,Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(AddAndModifyReviewActivity.this, MainActivity.class);
+                    intent.putExtra("cosmetic_id",""+cosmetic_id);
+                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
+                    startActivity(intent);
+                    finish();
+                }else {
+                    ReviewDatas review = new ReviewDatas(cosmeticBrand.getText().toString(), cosmeticName.getText().toString(), userData.getStringExtra("userNickname"),reviewGood.getText() + "/" + reviewBad.getText() + "/" + reviewTip.getText(),
+                            cosmeticDurationSpinner.getSelectedItemPosition(), userRating.getRating(),Integer.valueOf(userData.getStringExtra("cosmetic_id")));
+                    server.store_review(review);
+                    Intent intent = new Intent(AddAndModifyReviewActivity.this, MainActivity.class);
+                    intent.putExtra("cosmetic_id",""+cosmetic_id);
+                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(AddAndModifyReviewActivity.this, MainActivity.class);
+        intent.putExtra("cosmetic_id",""+cosmetic_id);
+        intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+        intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+        intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -167,6 +213,10 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
             drawer.closeDrawer(GravityCompat.START);
         }
         Intent intent = new Intent(AddAndModifyReviewActivity.this, MainActivity.class);
+        intent.putExtra("cosmetic_id",""+cosmetic_id);
+        intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+        intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+        intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
         startActivity(intent);
     }
 

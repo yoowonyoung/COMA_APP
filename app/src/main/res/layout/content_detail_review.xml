@@ -148,6 +148,7 @@
                         app:showOutline="false" />
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/cosmetic_modify_review_"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_gravity="center_horizontal"
@@ -162,6 +163,7 @@
 
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/cosmetic_delete_review"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_gravity="center_horizontal"

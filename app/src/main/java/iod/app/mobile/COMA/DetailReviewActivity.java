@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.support.annotation.BoolRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,8 +21,14 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.net.URL;
+
+import iod.app.mobile.COMA.DBStaticValue.REVIEW;
 
 public class DetailReviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -32,10 +39,14 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
     private TextView cosmeticIngredient;
     private RatingBar cosmeticRating;
     private BootstrapButton addReview;
+    private BootstrapButton modifyReview;
+    private BootstrapButton deleteReview;
     private TextView nickname;
     private View header;
     private Intent userData;
     private NavigationView navigationView;
+    private ServerManager server;
+    private Boolean reviewedFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,7 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
         nickname = (TextView)header.findViewById(R.id.nav_nickname);
         userData = getIntent();
         nickname.setText(userData.getStringExtra("userNickname"));
+        server = ServerManager.getInstance();
         final Handler handler = new Handler();
         Thread t = new Thread(new Runnable() {
             @Override
@@ -76,12 +88,44 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
         cosmeticIngredient = (TextView)findViewById(R.id.cosmetic_ingredient_review);
         cosmeticRating = (RatingBar)findViewById(R.id.cosmetic_rating_review);
         addReview = (BootstrapButton)findViewById(R.id.cosmetic_add_review);
+        modifyReview = (BootstrapButton)findViewById(R.id.cosmetic_modify_review_);
+        deleteReview = (BootstrapButton)findViewById(R.id.cosmetic_delete_review);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //intent를 통해 넘어온 값이 화장품ID이므로 그걸 꺼내줌
         final int cosmetic_id = Integer.valueOf(intent.getStringExtra("cosmetic_id"));
+        try {
+            JSONObject obj = new JSONObject(server.getAllCosmetic_withReview());
+            JSONArray jsonArray = (JSONArray) obj.get("data");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                if(temp.getInt("cosmetic_id") == cosmetic_id) {
+                    cosmeticBrand.setText(temp.getString("cosmetic_brand_name"));
+                    cosmeticName.setText(temp.getString("cosmetic_name"));
+                    cosmeticIngredient.setText(temp.getString("cosmetic_ingredient"));
+                    cosmeticRating.setRating(Float.valueOf(temp.getString("cosmetic_rank")));
+                    JSONObject reviewData = temp.getJSONObject("r_data");
+                    if(reviewData != null) {
+                        JSONArray reviews = reviewData.getJSONArray("c_reviews");
+                        if(reviews != null) {
+                            for(int j = 0; j < reviews.length(); j++) {
+                                JSONObject review = reviews.getJSONObject(j);
+                                if(review.getString("review_name").equals(userData.getStringExtra("userNickname"))) {
+                                    reviewedFlag = true;
+                                }
+                            }
+                        }
+                    }
+                }else {
+                    continue;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         addReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,6 +137,38 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
                 startActivity(intent);
             }
         });
+        modifyReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(reviewedFlag) {
+                    Intent intent = new Intent(DetailReviewActivity.this, AddAndModifyReviewActivity.class);
+                    intent.putExtra("cosmetic_id",""+cosmetic_id);
+                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
+                    intent.putExtra("mode",new String("modify"));
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(getApplicationContext(),"등록된 리뷰가 없습니다!",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        deleteReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(reviewedFlag) {
+                    ReviewDatas review = new ReviewDatas(cosmeticBrand.getText().toString(), cosmeticName.getText().toString(), userData.getStringExtra("userNickname")," ",
+                            1, (double)cosmeticRating.getRating(),Integer.valueOf(userData.getStringExtra("cosmetic_id")));
+                    server.delete_review(review);
+                    Toast.makeText(getApplicationContext(),"삭제 되었습니다!",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getApplicationContext(),"등록된 리뷰가 없습니다!",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        /*
         //DB에서 그 ID에 부합하는 화장품의 데이터를 꺼내옴
         String data = db.getCosmeticData(cosmetic_id);
         //꺼내온 데이터를 편집하는 과정
@@ -102,7 +178,7 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
         cosmeticName.setText(cosmeticData[1]);
         cosmeticRating.setRating(Float.valueOf(cosmeticData[2]));
         cosmeticIngredient.setText(cosmeticData[3]);
-
+        */
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
