@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -52,6 +53,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
     private BootstrapButton modifyBtn;
     private Boolean modifyFlag = false;
     private int cosmetic_id;
+    private ImageView cosmeticImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         navigationView = (NavigationView)findViewById(R.id.nav_view);
         header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         nickname = (TextView)header.findViewById(R.id.nav_nickname);
+        cosmeticImage = (ImageView)findViewById(R.id.cosmetic_image_add);
         userData = getIntent();
         nickname.setText(userData.getStringExtra("userNickname"));
         final Handler handler = new Handler();
@@ -111,12 +114,26 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
             JSONObject obj = new JSONObject(server.getAllCosmetic_withReview());
             JSONArray jsonArray = (JSONArray) obj.get("data");
             for(int i = 0; i < jsonArray.length(); i++) {
-                JSONObject temp = jsonArray.getJSONObject(i);
+                final JSONObject temp = jsonArray.getJSONObject(i);
                 if(temp.getInt("cosmetic_id") == cosmetic_id) {
                     cosmeticBrand.setText(temp.getString("cosmetic_brand_name"));
                     cosmeticName.setText(temp.getString("cosmetic_name"));
                     cosmeticIngredient.setText(temp.getString("cosmetic_ingredient"));
                     cosmeticRating.setRating(Float.valueOf(temp.getString("cosmetic_rank")));
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {    // 오래 거릴 작업을 구현한다
+                            // TODO Auto-generated method stub
+                            try{
+                                URL url = new URL(temp.getString("cosmetic_image"));
+                                InputStream is = url.openStream();
+                                final Bitmap bm = BitmapFactory.decodeStream(is);
+                                cosmeticImage.setImageBitmap(bm);
+                            } catch(Exception e){
+                            }
+                        }
+                    });
+                    thread.start();
                     JSONObject reviewData = temp.getJSONObject("r_data");
                     if(reviewData != null) {
                         JSONArray reviews = reviewData.getJSONArray("c_reviews");
