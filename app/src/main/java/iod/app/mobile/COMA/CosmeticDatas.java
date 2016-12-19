@@ -9,6 +9,7 @@ public class CosmeticDatas {
     private int cosmeticID;
     private int cosmeticVolume;
     private String cosmeticType;
+    private String cosmeticImageSrc;
     private String[] cosmeticTypes = {"스킨케어","클렌징/필링","마스크/팩","썬케어","베이스 메이크업","아이 메이크업","립 메이크업"
     , "바디","헤어","네일","향수","기타"};
 
@@ -44,6 +45,14 @@ public class CosmeticDatas {
 
     public String getCosmeticType() {
         return this.cosmeticType;
+    }
+
+    public void setCosmeticImageSrc(String src) {
+        this.cosmeticImageSrc = src;
+    }
+
+    public String getCosmeticImageSrc() {
+        return cosmeticImageSrc;
     }
 
     public int getCosmeticTypeIndex() {

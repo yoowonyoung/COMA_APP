@@ -30,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
     private BootstrapButton month2Btn;
     private BootstrapButton month3Btn;
     private BootstrapButton openBtn;
+    private ImageView image;
     private Calendar calendar = Calendar.getInstance();
     private SearchView mSearchView;
     private String[] cosmeticNameList;
@@ -111,6 +113,7 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
             }
         });
         t.start();
+        image = (ImageView)findViewById(R.id.cosmetic_image_add);
         week1Btn = (BootstrapButton) findViewById(R.id.alarm_1week_btn);
         week2Btn = (BootstrapButton)findViewById(R.id.alarm_2week_btn);
         month1Btn = (BootstrapButton)findViewById(R.id.alarm_1month_btn);
@@ -142,6 +145,7 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONObject temp = jsonArray.getJSONObject(i);
                 CosmeticDatas cosmeticDatas = new CosmeticDatas(temp.getString("cosmetic_name"),temp.getString("cosmetic_brand_name"),temp.getInt("cosmetic_id"),temp.getInt("cosmetic_volume"),temp.getString("cosmetic_type"));
+                cosmeticDatas.setCosmeticImageSrc(temp.getString("cosmetic_image"));
                 arraylist.add(cosmeticDatas);
             }
         } catch (JSONException e) {
@@ -250,8 +254,9 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
             @Override
             public void onClick(View view) {
                 //int index = db.getLastItemIndexFromMyItem();
+                Toast.makeText(getApplicationContext(),AddItem.getCosmeticImageSrc(),Toast.LENGTH_SHORT).show();
                 if(db.checkMyCosmetic(AddItem.getCosmeticID())){
-                    db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),"asd",AddItem.getCosmeticID());
+                    db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),AddItem.getCosmeticImageSrc(),AddItem.getCosmeticID());
                     Intent intent = new Intent(AddCosmeticActivity.this, MainActivity.class);
                     intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
                     intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
@@ -453,9 +458,24 @@ public class AddCosmeticActivity extends AppCompatActivity implements Navigation
                     AddItem = new CosmeticDatas(cosmeticDatasList.get(position).getCosmeticName(),
                             cosmeticDatasList.get(position).getCosmeticBrand(),
                             holder.cosmeticID, holder.cosmeticVolume, holder.cosmeticType);
+                    AddItem.setCosmeticImageSrc(cosmeticDatasList.get(position).getCosmeticImageSrc());
                     cosmeticName.setText(AddItem.getCosmeticBrand() + " " + AddItem.getCosmeticName());
                     cosmeticVolume.setText(AddItem.getCosmeticVolume() +"ml");
                     cosmetic_tpye_spinner.setSelection(AddItem.getCosmeticTypeIndex());
+                    Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {    // 오래 거릴 작업을 구현한다
+                            // TODO Auto-generated method stub
+                            try{
+                                URL url = new URL(cosmeticDatasList.get(position).getCosmeticImageSrc());
+                                InputStream is = url.openStream();
+                                final Bitmap bm = BitmapFactory.decodeStream(is);
+                                image.setImageBitmap(bm);
+                            } catch(Exception e){
+                            }
+                        }
+                    });
+                    t.start();
                 }
             });
             return view;

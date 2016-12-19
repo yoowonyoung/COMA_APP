@@ -69,7 +69,7 @@ public class ReviewDatas {
         this.comestic_id = comestic_id;
     }
 
-    public ReviewDatas(String cosmetic_brand_name, String comestic_name, String review_name, String review_content, int cometic_duration, double cometic_Rank, int comestic_id){
+    public ReviewDatas(String cosmetic_brand_name, String comestic_name, String review_name, String review_content, int cometic_duration, double cosmetic_Rank, int comestic_id){
         this.comestic_id = comestic_id;
         this.cosmetic_brand_name = cosmetic_brand_name;
         this.review_name = review_name;

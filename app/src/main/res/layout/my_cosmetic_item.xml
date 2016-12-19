@@ -30,9 +30,10 @@
                 android:layout_centerHorizontal="true">
 
                 <ImageView
-                    android:layout_width="match_parent"
+                    android:id="@+id/cosmetic_image"
+                    android:layout_width="200dp"
                     android:layout_height="70dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:layout_marginRight="10dp"
                     android:src="@drawable/cosmetics_sample"/>
 
