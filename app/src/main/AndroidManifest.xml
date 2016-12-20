@@ -57,6 +57,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"/>
         <activity
+            android:name=".ModifyCosmeticActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
             android:name=".DetailReviewActivity"
             android:theme="@style/AppTheme.NoActionBar" ></activity>
         <receiver android:name=".MyBroadcastReciver"></receiver>
