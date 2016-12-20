@@ -135,7 +135,6 @@ public class MyCosmeticAdapter extends RecyclerView.Adapter<MyCosmeticAdapter.Vi
             cv.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Toast.makeText(context,"Long",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, ModifyCosmeticActivity.class);
                     intent.putExtra("cosmetic_id",""+cosmetic_id);
                     intent.putExtra("userNickname",userData.getStringExtra("userNickname"));

@@ -153,6 +153,35 @@ public class ModifyCosmeticActivity extends AppCompatActivity implements Navigat
         }
         // Pass results to CosmeticListViewAdapter Class
         cosmeticSearchListadapter = new AddCosmeticListAdapter(this,arraylist);
+        cosmetic_tpye_spinner = (Spinner) findViewById(R.id.cosmetic_type_spinner);
+        ArrayAdapter<CharSequence> coemecit_type_adapter = ArrayAdapter.createFromResource(this, R.array.cosmetic_type, android.R.layout.simple_spinner_item);
+        coemecit_type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        cosmetic_tpye_spinner.setAdapter(coemecit_type_adapter);
+        int id = Integer.valueOf(userData.getStringExtra("cosmetic_id"));
+        for(int i = 0; i < cosmeticSearchListadapter.getCount(); i++) {
+            final CosmeticDatas data = cosmeticSearchListadapter.getItem(i);
+            if(data.getCosmeticID() == id) {
+                AddItem = data;
+                cosmeticName.setText(data.getCosmeticBrand() + " " + data.getCosmeticName());
+                cosmeticVolume.setText(data.getCosmeticVolume() +" ml");
+                cosmetic_tpye_spinner.setSelection(data.getCosmeticTypeIndex());
+                Thread tempThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {    // 오래 거릴 작업을 구현한다
+                        // TODO Auto-generated method stub
+                        try{
+                            URL url = new URL(data.getCosmeticImageSrc());
+                            InputStream is = url.openStream();
+                            final Bitmap bm = BitmapFactory.decodeStream(is);
+                            image.setImageBitmap(bm);
+                        } catch(Exception e){
+                        }
+                    }
+                });
+                tempThread.start();
+            }
+
+        }
         // Binds the Adapter to the ListView
         cosmeticNameListView.setAdapter(cosmeticSearchListadapter);
         cosmeticNameListView.setBackgroundColor(Color.WHITE);
@@ -177,10 +206,6 @@ public class ModifyCosmeticActivity extends AppCompatActivity implements Navigat
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        cosmetic_tpye_spinner = (Spinner) findViewById(R.id.cosmetic_type_spinner);
-        ArrayAdapter<CharSequence> coemecit_type_adapter = ArrayAdapter.createFromResource(this, R.array.cosmetic_type, android.R.layout.simple_spinner_item);
-        coemecit_type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        cosmetic_tpye_spinner.setAdapter(coemecit_type_adapter);
         Spinner spinner = (Spinner) findViewById(R.id.cosmetic_expiry_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.expriy_date_type, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -254,56 +279,69 @@ public class ModifyCosmeticActivity extends AppCompatActivity implements Navigat
             @Override
             public void onClick(View view) {
                 //int index = db.getLastItemIndexFromMyItem();
-                Toast.makeText(getApplicationContext(),AddItem.getCosmeticImageSrc(),Toast.LENGTH_SHORT).show();
-                if(db.checkMyCosmetic(AddItem.getCosmeticID())){
-                    db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),AddItem.getCosmeticImageSrc(),AddItem.getCosmeticID());
-                    Intent intent = new Intent(ModifyCosmeticActivity.this, MainActivity.class);
-                    intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
-                    intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
-                    intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
-                    startActivity(intent);
-
-                    //알림기능 사용
-                    Intent alarmIntent = new Intent(ModifyCosmeticActivity.this, MyBroadcastReciver.class);
-                    //Pending Intent 이용해서 알림을 등록 하기 위함
-                    PendingIntent sender = PendingIntent.getBroadcast(ModifyCosmeticActivity.this, 0, alarmIntent, 0);
-                    //DB에서 알림 시각을 꺼내옴
-                    String data = db.getAlarmData();
-                    String time[] = null;
-                    if(!data.equals(new String("NoData"))) {
-                        String temp[] = data.split("/");
-                        time = temp[2].split(":");
-                    }
-                    if(week1Btn.isSelected()) {//각 버튼 별 알림 유무 확인 - 그니까 1주일전에 알림을 줄것인지, 2주일전에 줄것인지...
-                        calendar.add(Calendar.DATE,-7);//calendar에 유통기한 날짜가 저장이 되어 있는데, 거기서 7일을 뺌
-                        //알림할 년,월,일,시,분,초 설정
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
-                        //알림매니저를 이용해서 알림을 설정 하는 기능
-                        mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-                    }
-                    if(week2Btn.isSelected()) {
-                        calendar.add(Calendar.DATE,-14);
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
-                        mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-                    }
-                    if(month1Btn.isSelected()) {
-                        calendar.add(Calendar.MONTH,-1);
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
-                        mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-                    }
-                    if(month2Btn.isSelected()) {
-                        calendar.add(Calendar.MONTH,-2);
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
-                        mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-                    }
-                    if(month3Btn.isSelected()) {
-                        calendar.add(Calendar.MONTH,-3);
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
-                        mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-                    }
-                    finish();
+                if(cosmeticOpenDay.getText().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "개봉일이 입력되지 않았습니다!", Toast.LENGTH_SHORT).show();
+                    cosmeticOpenDay.requestFocus();
+                }else if(cosmeticExpriyDay.getText().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "유통기한이 입력되지 않았습니다!", Toast.LENGTH_SHORT).show();
+                    cosmeticExpriyDay.requestFocus();
                 }else {
-                    Toast.makeText(getApplicationContext(),"이미 등록되어있는 화장품 입니다",Toast.LENGTH_SHORT).show();
+                    if(!db.checkMyCosmetic(AddItem.getCosmeticID())){
+                        //db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),AddItem.getCosmeticImageSrc(),AddItem.getCosmeticID());
+                        Intent intent = new Intent(ModifyCosmeticActivity.this, MainActivity.class);
+                        intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                        intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                        intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
+                        startActivity(intent);
+
+                        //알림기능 사용
+                        Intent alarmIntent = new Intent(ModifyCosmeticActivity.this, MyBroadcastReciver.class);
+                        //Pending Intent 이용해서 알림을 등록 하기 위함
+                        PendingIntent sender = PendingIntent.getBroadcast(ModifyCosmeticActivity.this, 0, alarmIntent, 0);
+                        //DB에서 알림 시각을 꺼내옴
+                        String data = db.getAlarmData();
+                        String time[] = null;
+                        if(!data.equals(new String("NoData"))) {
+                            String temp[] = data.split("/");
+                            time = temp[2].split(":");
+                        }
+                        if(week1Btn.isSelected()) {//각 버튼 별 알림 유무 확인 - 그니까 1주일전에 알림을 줄것인지, 2주일전에 줄것인지...
+                            calendar.add(Calendar.DATE,-7);//calendar에 유통기한 날짜가 저장이 되어 있는데, 거기서 7일을 뺌
+                            //알림할 년,월,일,시,분,초 설정
+                            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
+                            //알림매니저를 이용해서 알림을 설정 하는 기능
+                            mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+                        }
+                        if(week2Btn.isSelected()) {
+                            calendar.add(Calendar.DATE,-14);
+                            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
+                            mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+                        }
+                        if(month1Btn.isSelected()) {
+                            calendar.add(Calendar.MONTH,-1);
+                            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
+                            mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+                        }
+                        if(month2Btn.isSelected()) {
+                            calendar.add(Calendar.MONTH,-2);
+                            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
+                            mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+                        }
+                        if(month3Btn.isSelected()) {
+                            calendar.add(Calendar.MONTH,-3);
+                            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0);
+                            mManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+                        }
+                        finish();
+                    }else {
+                        Toast.makeText(getApplicationContext(),"등록되어있지 않은 화장품 입니다\n 자동으로 저장됩니다.",Toast.LENGTH_SHORT).show();
+                        db.insertCosmetic(AddItem.getCosmeticBrand(),AddItem.getCosmeticName(),cosmetic_tpye_spinner.getSelectedItem().toString(),AddItem.getCosmeticImageSrc(),AddItem.getCosmeticID());
+                        Intent intent = new Intent(ModifyCosmeticActivity.this, MainActivity.class);
+                        intent.putExtra("userNickname",userData.getStringExtra("userNickname"));
+                        intent.putExtra("userProfilImage",userData.getStringExtra("userProfilImage"));
+                        intent.putExtra("userThumbnailImage",userData.getStringExtra("userThumbnailImage"));
+                        startActivity(intent);
+                    }
                 }
 
             }

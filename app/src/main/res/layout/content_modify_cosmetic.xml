@@ -297,7 +297,7 @@
             android:layout_marginTop="40dp"
             app:bootstrapBrand="primary"
             app:bootstrapSize="lg"
-            app:bootstrapText="화장품 등록"
+            app:bootstrapText="화장품 수정"
             app:buttonMode="regular"
             app:roundedCorners="true"
             app:showOutline="false" />

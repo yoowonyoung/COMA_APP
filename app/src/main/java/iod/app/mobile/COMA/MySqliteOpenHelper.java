@@ -203,12 +203,25 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public String getMyCosmetic(int cosmetic_id) {
+        String result = "";
+        Cursor cur = db.rawQuery("SELECT * FROM COSMETIC WHERE cosmetic_id = "+ cosmetic_id,null);
+        while (cur.moveToNext()) {
+            result += cur.getString(4)
+                    + "/"
+                    + cur.getString(3)
+                    + "/"
+                    + cur.getDouble(7)
+                    + "/"
+                    + cur.getString(1);
+        }
+        return result;
+    }
+
     public String getMyCosmetic() {
         String result = "";
-        Cursor cur = db.rawQuery("SELECT * FROM MY_COSMETIC",null);
-        int count = 0;
+        Cursor cur = db.rawQuery("SELECT * FROM MY_COSMETIC ",null);
         while (cur.moveToNext()) {
-            count++;
             result += cur.getString(0)
                     + ","
                     + cur.getString(1)
