@@ -49,6 +49,13 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
     private ServerManager server;
     private Boolean reviewedFlag = false;
     private ImageView cosmeticImage;
+    private TextView reviewText1;
+    private TextView reviewText2;
+    private TextView reviewText3;
+    private RatingBar reviewRating1;
+    private RatingBar reviewRating2;
+    private RatingBar reviewRating3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +99,12 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
         addReview = (BootstrapButton)findViewById(R.id.cosmetic_add_review);
         modifyReview = (BootstrapButton)findViewById(R.id.cosmetic_modify_review_);
         deleteReview = (BootstrapButton)findViewById(R.id.cosmetic_delete_review);
+        reviewText1 = (TextView)findViewById(R.id.review_text_1);
+        reviewText2 = (TextView)findViewById(R.id.review_text_2);
+        reviewText3 = (TextView)findViewById(R.id.review_text_3);
+        reviewRating1 = (RatingBar)findViewById(R.id.review_rating_1);
+        reviewRating2 = (RatingBar)findViewById(R.id.review_rating_2);
+        reviewRating3 = (RatingBar)findViewById(R.id.review_rating_3);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -129,6 +142,21 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
                         if(reviews != null) {
                             for(int j = 0; j < reviews.length(); j++) {
                                 JSONObject review = reviews.getJSONObject(j);
+                                if(j == 0) {
+                                    String reviewContent = review.getString("review_content");
+                                    reviewText1.setText(reviewContent.split("/")[0]);
+                                    reviewRating1.setRating((float)review.getDouble("cosmetic_rank"));
+                                }
+                                if(j == 1) {
+                                    String reviewContent = review.getString("review_content");
+                                    reviewText2.setText(reviewContent.split("/")[0]);
+                                    reviewRating2.setRating((float)review.getDouble("cosmetic_rank"));
+                                }
+                                if(j == 2) {
+                                    String reviewContent = review.getString("review_content");
+                                    reviewText3.setText(reviewContent.split("/")[0]);
+                                    reviewRating3.setRating((float)review.getDouble("cosmetic_rank"));
+                                }
                                 if(review.getString("review_name").equals(userData.getStringExtra("userNickname"))) {
                                     reviewedFlag = true;
                                 }

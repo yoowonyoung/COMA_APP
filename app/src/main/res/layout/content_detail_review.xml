@@ -209,6 +209,7 @@
                             android:src="@drawable/account"/>
 
                         <TextView
+                            android:id="@+id/review_text_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -218,6 +219,7 @@
                             android:textColor="#000000"/>
 
                         <RatingBar
+                            android:id="@+id/review_rating_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -241,6 +243,7 @@
                             android:src="@drawable/account"/>
 
                         <TextView
+                            android:id="@+id/review_text_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -250,6 +253,7 @@
                             android:textColor="#000000"/>
 
                         <RatingBar
+                            android:id="@+id/review_rating_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -273,6 +277,7 @@
                             android:src="@drawable/account"/>
 
                         <TextView
+                            android:id="@+id/review_text_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="7"
@@ -282,6 +287,7 @@
                             android:textColor="#000000"/>
 
                         <RatingBar
+                            android:id="@+id/review_rating_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"

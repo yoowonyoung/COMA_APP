@@ -69,7 +69,7 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
         navigationView = (NavigationView)findViewById(R.id.nav_view);
         header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         nickname = (TextView)header.findViewById(R.id.nav_nickname);
-        cosmeticImage = (ImageView)findViewById(R.id.cosmetic_image_add);
+        cosmeticImage = (ImageView)findViewById(R.id.cosmetic_image_add_review);
         userData = getIntent();
         nickname.setText(userData.getStringExtra("userNickname"));
         final Handler handler = new Handler();
