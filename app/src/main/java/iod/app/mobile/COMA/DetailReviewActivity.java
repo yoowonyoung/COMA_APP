@@ -144,18 +144,25 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
                                 JSONObject review = reviews.getJSONObject(j);
                                 if(j == 0) {
                                     String reviewContent = review.getString("review_content");
-                                    reviewText1.setText(reviewContent.split("/")[0]);
-                                    reviewRating1.setRating((float)review.getDouble("cosmetic_rank"));
+                                    if(reviewContent.length() > 0) {
+                                        reviewText1.setText(reviewContent.split("/")[0]);
+                                        reviewRating1.setRating((float)review.getDouble("cosmetic_rank"));
+                                    }
+
                                 }
                                 if(j == 1) {
                                     String reviewContent = review.getString("review_content");
-                                    reviewText2.setText(reviewContent.split("/")[0]);
-                                    reviewRating2.setRating((float)review.getDouble("cosmetic_rank"));
+                                    if(reviewContent.length() > 0) {
+                                        reviewText2.setText(reviewContent.split("/")[0]);
+                                        reviewRating2.setRating((float)review.getDouble("cosmetic_rank"));
+                                    }
                                 }
                                 if(j == 2) {
                                     String reviewContent = review.getString("review_content");
-                                    reviewText3.setText(reviewContent.split("/")[0]);
-                                    reviewRating3.setRating((float)review.getDouble("cosmetic_rank"));
+                                    if(reviewContent.length() > 0) {
+                                        reviewText3.setText(reviewContent.split("/")[0]);
+                                        reviewRating3.setRating((float)review.getDouble("cosmetic_rank"));
+                                    }
                                 }
                                 if(review.getString("review_name").equals(userData.getStringExtra("userNickname"))) {
                                     reviewedFlag = true;
