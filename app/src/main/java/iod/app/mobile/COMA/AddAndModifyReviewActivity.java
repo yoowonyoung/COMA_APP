@@ -186,7 +186,6 @@ public class AddAndModifyReviewActivity extends AppCompatActivity implements Nav
                     ReviewDatas review = new ReviewDatas(cosmeticBrand.getText().toString(), cosmeticName.getText().toString(), userData.getStringExtra("userNickname"),reviewGood.getText() + "/" + reviewBad.getText() + "/" + reviewTip.getText(),
                             cosmeticDurationSpinner.getSelectedItemPosition(), userRating.getRating(),Integer.valueOf(userData.getStringExtra("cosmetic_id")));
                     server.modify_reveiw(review);
-                    Toast.makeText(getApplication(),userRating.getRating() + "" ,Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(AddAndModifyReviewActivity.this, MainActivity.class);
                     intent.putExtra("cosmetic_id",""+cosmetic_id);
                     intent.putExtra("userNickname",userData.getStringExtra("userNickname"));

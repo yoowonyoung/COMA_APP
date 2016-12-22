@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -145,10 +146,10 @@ public class DetailReviewActivity extends AppCompatActivity implements Navigatio
                                 if(j == 0) {
                                     String reviewContent = review.getString("review_content");
                                     if(reviewContent.length() > 0) {
+                                        Log.e("Here",reviewContent);
                                         reviewText1.setText(reviewContent.split("/")[0]);
                                         reviewRating1.setRating((float)review.getDouble("cosmetic_rank"));
                                     }
-
                                 }
                                 if(j == 1) {
                                     String reviewContent = review.getString("review_content");
